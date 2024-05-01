@@ -1,5 +1,5 @@
 import java.util.Random;
-import java.util.*;
+//import java.util.*;
 
 public class Greedy {
     //creates a graph randomly
@@ -120,7 +120,7 @@ public class Greedy {
         //to store the path for debugging
         int [] path = new int [vertices];
         int path_index = 0;
-        boolean has_path = false;
+        //boolean has_path = false;
         //lowest edges to store number of edges while loweest vertex stores which vertex
         int lowest_edges = -1;
         int lowest_vertex = -1;
