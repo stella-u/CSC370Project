@@ -182,7 +182,11 @@ public class Greedy {
             lowest_edges = -1;
             lowest_vertex = -1;
             int[] connected_unvisited = find_unvisited_edges(graph, current_vertex, vertices, visited);
-
+            System.out.println("\npossible vertices");
+            for(int x = 0; x<connected_unvisited.length;x++)
+            {
+                System.out.print(connected_unvisited[x]);
+            }
             for(int j = 0; j < connected_unvisited.length; j++)
             {
                 int edges = count_unvisited(graph, j, vertices, visited);
@@ -201,7 +205,7 @@ public class Greedy {
             num_unvisited = count_unvisited(graph,current_vertex,vertices,visited);
 
         }
-        System.out.println("num_visited = "+ num_visited+"\n");
+        System.out.println("\nnum_visited = "+ num_visited+"\n");
         for(int x = 0; x<visited.length;x++)
         {
             System.out.print(visited[x]);
