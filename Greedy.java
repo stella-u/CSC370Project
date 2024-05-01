@@ -58,8 +58,7 @@ public class Greedy {
         }
 
         return result;
-    }
-    
+    }   
     //count unvisited edges
     public static int count_unvisited(int[][] graph, int vertex, int vertices, int[] visited)
     {
@@ -116,37 +115,61 @@ public class Greedy {
     
     //code greedy algorithm here 
     //for debugging store path
+    public static boolean hamiltonian_path(int[][] graph, int vertices)
+    {
+        boolean has_path = false;
+        int start = -1;
+        int num_one_edges = 0;
+        for(int i = 0; i < vertices; i++)
+        {
+            int edges = count_ones(graph, i, vertices);
+            if(edges == 0)
+            {
+                System.out.println("isolated vertex "+ i);
+                return false;
+            }
+            else if(edges == 1)
+            {
+                System.out.println("one edge vertex "+ i);
+                start = i;
+                num_one_edges++;
+            }
+        }
+        System.out.println("total one edge vertexes " + num_one_edges);
+        if(num_one_edges>2)
+        {
+            return false;
+        }
+        //check if any have degree 0
+            //return false if that is the case
+        //if any have degree 1
+            //start there
+        //find lowest degree to start
+        //continue while all_visited = False or current is connected to no unvisited nodes
+            //find edges
+            //find lowest amount of unvisited nodes edges
+                //if some have the same try all 
+            //visit that node
+            //make it be 1 in visited
+
+        return true;
+    }
 
     public static void main( String args[] ) 
     {
-        
-        //testing with a graph of size 5
-        int vertex = 0;
         int vertices = 5;
-        int five_graph[][] = create_graph(vertices);
+        int[][] new_graph = create_graph(vertices);
+        boolean has_path = hamiltonian_path(new_graph, vertices);
+        System.out.println("has path "+has_path);
+        //print graph
         for(int i=0; i < vertices; i++){
             for(int j = 0; j < vertices;  j++){
-                System.out.print(five_graph[i][j]+" ");
+                System.out.print(new_graph[i][j]+" ");
             }
             System.out.println();
         }
-        int five_edges[] = find_edges(five_graph, vertex, vertices);
-        System.out.println("all edges");
-        for(int i = 0; i < five_edges.length; i++){
-            System.out.print(five_edges[i]);
-            
-        }
-       
-        //in the array below only thee second edge has been visited so far
-        int visited[] = new int[] {0,1,0,1,0};
-        //need to create a helper method to change a 0 to a 1 when passed an int and the visited array
-        int[] unvisited_edges = find_unvisited_edges(five_graph, vertex, vertices,visited);
-        System.out.println("unvisited edges");
-        for(int i = 0; i < unvisited_edges.length; i++){
-            System.out.print(unvisited_edges[i]);
-        }
 
 
-
+        
     }
 }
