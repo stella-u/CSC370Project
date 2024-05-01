@@ -42,7 +42,7 @@ public class Greedy {
         int size = 0;
         int current_index = 0;
         size = count_ones(graph, vertex, vertices);
-        System.out.println("\nsize " + size);
+        //System.out.println("\nsize " + size);
         int[] result = new int [size];
         for (int i = 0; i< vertices; i++)
         {
@@ -82,7 +82,7 @@ public class Greedy {
     {
         int current_index = 0;
         int size = count_unvisited(graph, vertex, vertices, visited);
-        System.out.println("\nsize " + size);
+        //System.out.println("\nsize " + size);
         int[] result = new int [size];
         for (int i = 0; i< vertices; i++)
         {
@@ -117,9 +117,19 @@ public class Greedy {
     //for debugging store path
     public static boolean hamiltonian_path(int[][] graph, int vertices)
     {
+        //to store the path for debugging
+        int [] path = new int [vertices];
+        int path_index = 0;
         boolean has_path = false;
-        int start = -1;
+        //lowest edges to store number of edges while loweest vertex stores which vertex
+        int lowest_edges = -1;
+        int lowest_vertex = -1;
         int num_one_edges = 0;
+        int num_visited = 0;
+        int[] visited = new int [vertices];
+        //initialize visited array
+        visited = fill_array(visited);
+        // determine if no path is possible and if one is go ahead and find the start point
         for(int i = 0; i < vertices; i++)
         {
             int edges = count_ones(graph, i, vertices);
@@ -130,9 +140,13 @@ public class Greedy {
             }
             else if(edges == 1)
             {
-                System.out.println("one edge vertex "+ i);
-                start = i;
+                //System.out.println("one edge vertex "+ i);
                 num_one_edges++;
+            }
+            if(lowest_edges == -1 || edges < lowest_edges)
+            {
+                lowest_edges = edges;
+                lowest_vertex = i;
             }
         }
         System.out.println("total one edge vertexes " + num_one_edges);
@@ -140,19 +154,49 @@ public class Greedy {
         {
             return false;
         }
-        //check if any have degree 0
-            //return false if that is the case
-        //if any have degree 1
-            //start there
-        //find lowest degree to start
-        //continue while all_visited = False or current is connected to no unvisited nodes
-            //find edges
-            //find lowest amount of unvisited nodes edges
-                //if some have the same try all 
-            //visit that node
-            //make it be 1 in visited
+        //start the path
+        visited[lowest_vertex] =1;
+        num_visited++;
+        int current_vertex =lowest_vertex;
+        path[path_index] = current_vertex;
+        path_index++;
+        
+        //begin loop
+        while(num_visited < vertices && count_unvisited(graph,current_vertex,vertices,visited) !=0 )
+        {
+            System.out.println("Current vertex "+current_vertex);
+            lowest_edges = -1;
+            lowest_vertex = -1;
+            int[] connected_unvisited = find_unvisited_edges(graph, current_vertex, vertices, visited);
+            for(int j = 0; j < connected_unvisited.length; j++)
+            {
+                int edges = count_unvisited(graph, j, vertices, visited);
+                System.out.println(j+ " has "+edges + " edges");
+                if(lowest_edges == -1 || edges < lowest_edges)
+                {
+                    lowest_edges = edges;
+                    lowest_vertex = j;
+                }
+            }
+            current_vertex = lowest_vertex;
+            visited[lowest_vertex]= 1;
+            
+            num_visited++;
+            path[path_index] = current_vertex;
+            path_index++;
 
-        return true;
+        }
+        System.out.println("num_visited = "+ num_visited);
+        for(int x = 0; x <path.length; x++)
+        {
+            System.out.println("step "+x+" is go to vertex "+ path[x]);
+        }
+        if(num_visited == vertices)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public static void main( String args[] ) 
