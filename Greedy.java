@@ -117,8 +117,14 @@ public class Greedy {
     //for debugging store path
     public static boolean hamiltonian_path(int[][] graph, int vertices)
     {
+        //********************************************************************************* */
+        //note this currently doesn't work. I think the issue is with recognizing what point
+        //to go to next or with one of the helper functions
+        //I tested each helper function individually but they aren't combining together properly
+        //************************************************************************************ */
         //to store the path for debugging
         int [] path = new int [vertices];
+        path = fill_array(path);
         int path_index = 0;
         //boolean has_path = false;
         //lowest edges to store number of edges while loweest vertex stores which vertex
@@ -160,18 +166,27 @@ public class Greedy {
         int current_vertex =lowest_vertex;
         path[path_index] = current_vertex;
         path_index++;
+        //unvisited vertexes from the current vertex
+        int num_unvisited = count_unvisited(graph,current_vertex,vertices,visited);
         
         //begin loop
-        while(num_visited < vertices && count_unvisited(graph,current_vertex,vertices,visited) !=0 )
+        while(num_visited < vertices && num_unvisited !=0 )
         {
-            System.out.println("Current vertex "+current_vertex);
+            System.out.println("\ncurrent "+ current_vertex);
+            System.out.println("visited " + num_visited+ " "+ "linked to " +num_unvisited+"\n");
+            for(int x = 0; x<visited.length;x++)
+            {
+                System.out.print(visited[x]);
+            }
+            //System.out.println("Current vertex "+current_vertex);
             lowest_edges = -1;
             lowest_vertex = -1;
             int[] connected_unvisited = find_unvisited_edges(graph, current_vertex, vertices, visited);
+
             for(int j = 0; j < connected_unvisited.length; j++)
             {
                 int edges = count_unvisited(graph, j, vertices, visited);
-                System.out.println(j+ " has "+edges + " edges");
+                //System.out.println(j+ " has "+edges + " edges");
                 if(lowest_edges == -1 || edges < lowest_edges)
                 {
                     lowest_edges = edges;
@@ -180,17 +195,18 @@ public class Greedy {
             }
             current_vertex = lowest_vertex;
             visited[lowest_vertex]= 1;
-            
             num_visited++;
             path[path_index] = current_vertex;
             path_index++;
+            num_unvisited = count_unvisited(graph,current_vertex,vertices,visited);
 
         }
-        System.out.println("num_visited = "+ num_visited);
-        for(int x = 0; x <path.length; x++)
+        System.out.println("num_visited = "+ num_visited+"\n");
+        for(int x = 0; x<visited.length;x++)
         {
-            System.out.println("step "+x+" is go to vertex "+ path[x]);
+            System.out.print(visited[x]);
         }
+    
         if(num_visited == vertices)
         {
             return true;
@@ -204,7 +220,7 @@ public class Greedy {
         int vertices = 5;
         int[][] new_graph = create_graph(vertices);
         boolean has_path = hamiltonian_path(new_graph, vertices);
-        System.out.println("has path "+has_path);
+        System.out.println("\nhas path "+has_path);
         //print graph
         for(int i=0; i < vertices; i++){
             for(int j = 0; j < vertices;  j++){
