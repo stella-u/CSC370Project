@@ -113,32 +113,22 @@ public class Greedy {
         return array;
     }
     
-    //code greedy algorithm here 
-    //for debugging store path
-    public static boolean hamiltonian_path(int[][] graph, int vertices)
-    {
-        //********************************************************************************* */
-        //note this currently doesn't work. I think the issue is with recognizing what point
-        //to go to next or with one of the helper functions
-        //I tested each helper function individually but they aren't combining together properly
-        //************************************************************************************ */
-        //to store the path for debugging
-        int [] path = new int [vertices];
+  
+    public static boolean hamiltonian_path(int[][] graph, int vertices) {
+        int[] path = new int[vertices];
         path = fill_array(path);
         int path_index = 0;
-        //boolean has_path = false;
-        //lowest edges to store number of edges while loweest vertex stores which vertex
-        int lowest_edges = -1;
         int lowest_vertex = -1;
-        int num_one_edges = 0;
         int num_visited = 0;
-        int[] visited = new int [vertices];
-        //initialize visited array
+        int num_one_edges = 0;
+        int[] visited = new int[vertices];
         visited = fill_array(visited);
-        // determine if no path is possible and if one is go ahead and find the start point
-        for(int i = 0; i < vertices; i++)
-        {
+    
+        //find  starting vertex with the lowest degree
+        int lowest_edges = Integer.MAX_VALUE;
+        for (int i = 0; i < vertices; i++) {
             int edges = count_ones(graph, i, vertices);
+            //no path if a vertex has no edge
             if(edges == 0)
             {
                 System.out.println("isolated vertex "+ i);
@@ -149,76 +139,88 @@ public class Greedy {
                 //System.out.println("one edge vertex "+ i);
                 num_one_edges++;
             }
-            if(lowest_edges == -1 || edges < lowest_edges)
-            {
+            if (edges < lowest_edges) {
                 lowest_edges = edges;
                 lowest_vertex = i;
             }
         }
-        System.out.println("total one edge vertexes " + num_one_edges);
+        //no path if more than 2 vertexes are degree 1
         if(num_one_edges>2)
         {
+            System.out.println("Too many vertices with degree 1: "+ num_one_edges +" vertices");
             return false;
         }
-        //start the path
-        visited[lowest_vertex] =1;
+    
+        // Start the path
+        visited[lowest_vertex] = 1;
         num_visited++;
-        int current_vertex =lowest_vertex;
+        int current_vertex = lowest_vertex;
         path[path_index] = current_vertex;
         path_index++;
-        //unvisited vertexes from the current vertex
-        int num_unvisited = count_unvisited(graph,current_vertex,vertices,visited);
-        
-        //begin loop
-        while(num_visited < vertices && num_unvisited !=0 )
-        {
-            System.out.println("\ncurrent "+ current_vertex);
-            System.out.println("visited " + num_visited+ " "+ "linked to " +num_unvisited+"\n");
-            for(int x = 0; x<visited.length;x++)
-            {
-                System.out.print(visited[x]);
-            }
-            //System.out.println("Current vertex "+current_vertex);
-            lowest_edges = -1;
-            lowest_vertex = -1;
+    
+        // Begin loop
+        while (num_visited < vertices) {
             int[] connected_unvisited = find_unvisited_edges(graph, current_vertex, vertices, visited);
-            System.out.println("\npossible vertices");
-            for(int x = 0; x<connected_unvisited.length;x++)
-            {
-                System.out.print(connected_unvisited[x]);
-            }
-            for(int j = 0; j < connected_unvisited.length; j++)
-            {
+            lowest_vertex = -1;
+            lowest_edges = Integer.MAX_VALUE;
+    
+            // Find the next vertex with the lowest degree
+            for (int j : connected_unvisited) {
                 int edges = count_unvisited(graph, j, vertices, visited);
-                //System.out.println(j+ " has "+edges + " edges");
-                if(lowest_edges == -1 || edges < lowest_edges)
-                {
+                if (edges < lowest_edges) {
                     lowest_edges = edges;
                     lowest_vertex = j;
                 }
             }
+    
+            // Check if there's no next vertex to visit
+            if (lowest_vertex == -1)
+            {
+                //print path and length of path then return false
+                System.out.print("Path: ");
+                for (int i = 0; i < path_index; i++) 
+                {
+                    System.out.print(path[i] + " ");
+                }
+                System.out.println();
+                //If not a full Hamiltonian Path, necessary for determining how well the greedy algorithm did
+                System.out.println("No path found");
+                System.out.println("Path length: " + path_index);
+                return false;
+            }
+                
+    
             current_vertex = lowest_vertex;
-            visited[lowest_vertex]= 1;
+            visited[lowest_vertex] = 1;
             num_visited++;
             path[path_index] = current_vertex;
             path_index++;
-            num_unvisited = count_unvisited(graph,current_vertex,vertices,visited);
-
         }
-        System.out.println("\nnum_visited = "+ num_visited+"\n");
-        for(int x = 0; x<visited.length;x++)
+        
+        // Check if all vertices are visited
+        if (num_visited == vertices) 
         {
-            System.out.print(visited[x]);
-        }
-    
-        if(num_visited == vertices)
-        {
+            //print path
+            System.out.print("Hamiltonian Path: ");
+            for (int i = 0; i < vertices; i++) 
+            {
+                System.out.print(path[i] + " ");
+            }
+            System.out.println();
             return true;
         }
-
+        System.out.print("Path: ");
+        for (int i = 0; i < path_index; i++) 
+        {
+            System.out.print(path[i] + " ");
+        }
+        System.out.println();
+        //If not a full Hamiltonian Path, necessary for determining how well the greedy algorithm did
+        System.out.println("No path found");
+        System.out.println("Path length: " + path_index);
         return false;
     }
-
+    
     public static void main( String args[] ) 
     {
         int vertices = 5;
